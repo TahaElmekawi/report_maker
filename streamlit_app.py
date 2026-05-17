@@ -114,8 +114,8 @@ if uploaded_file is not None:
         grouped_site = site_df.groupby('CELL_ADDRESS').agg(
             Count=('CELL_ADDRESS', 'size'),
             First_Use_Date=('EVENT_START_TIME', 'min'),
-            Last_Use_Date=('EVENT_START_TIME', 'max')
-            CELL_LAT = ("CELL_LAT")
+            Last_Use_Date=('EVENT_START_TIME', 'max') ,
+            CELL_LAT = ("CELL_LAT"),
             CELL_LONG = ('CELL_LONG')
         ).reset_index()
 
