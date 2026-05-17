@@ -128,7 +128,7 @@ if uploaded_file is not None:
         grouped_site['Map'] = grouped_site.apply(lambda row: make_map_link(row['Lat'], row['Lon']), axis=1)
 
         site_sheet = grouped_site[['CELL_ADDRESS', 'Count', 'Map', 'First_Use_Date', 'Last_Use_Date']]
-        site_sheet.columns = ['CELL_ADDRESS', 'Count', 'Map', 'First_Use_Date', 'Last_Use_Date']
+        site_sheet.columns = ['CELL_ADDRESS', 'Count', 'Map', 'CELL_LAT', 'CELL_LONG', 'First_Use_Date', 'Last_Use_Date']
 
         # ==============================================
         # cheet
