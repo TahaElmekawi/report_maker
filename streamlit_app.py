@@ -60,8 +60,8 @@ if uploaded_file is not None:
 
         grouped = grouped.sort_values('Count', ascending=False)
 
-        calls_sheet = grouped[['B Number', 'Count', 'B_Full_Name', 'B_Address', 'B_Number_id', 'SMS']]
-        calls_sheet.columns = ['B Number', 'Count', 'B Full Name', 'B Address', 'B Number id', 'SMS']
+        calls_sheet = grouped[['Count','B Number',  'B_Full_Name', 'B_Address', 'B_Number_id', 'SMS']]
+        calls_sheet.columns = ['Count','B Number',  'B Full Name', 'B Address', 'B Number id', 'SMS']
 
         # ==============================================
         # imei
@@ -91,7 +91,7 @@ if uploaded_file is not None:
 
         grouped_imei['Device Info'] = grouped_imei['TARGET_IMEI'].apply(make_imei_link)
 
-        imei_sheet = grouped_imei[['TARGET_IMEI', 'Count', 'TARGET_IMEI_TYPE', 'Device Info',
+        imei_sheet = grouped_imei[[ 'Count', 'TARGET_IMEI', 'TARGET_IMEI_TYPE', 'Device Info',
                                   'First_Use_Date', 'Last_Use_Date', 'First_Use_Address', 'Last_Use_Address']]
 
         imei_sheet.columns = ['IMEI', 'Count', 'TARGET_IMEI_TYPE', 'Device Info',
@@ -127,8 +127,8 @@ if uploaded_file is not None:
 
         grouped_site['Map'] = grouped_site.apply(lambda row: make_map_link(row['Lat'], row['Lon']), axis=1)
 
-        site_sheet = grouped_site[['CELL_ADDRESS', 'Count', 'Map', 'First_Use_Date', 'Last_Use_Date']]
-        site_sheet.columns = ['CELL_ADDRESS', 'Count', 'Map', 'CELL_LAT', 'CELL_LONG', 'First_Use_Date', 'Last_Use_Date']
+        site_sheet = grouped_site[['Count','CELL_ADDRESS',  'Map', 'First_Use_Date', 'Last_Use_Date']]
+        site_sheet.columns = ['Count','CELL_ADDRESS',  'Map', 'CELL_LAT', 'CELL_LONG', 'First_Use_Date', 'Last_Use_Date']
 
         # ==============================================
         # cheet
