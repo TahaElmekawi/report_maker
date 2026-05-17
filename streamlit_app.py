@@ -115,8 +115,8 @@ if uploaded_file is not None:
             Count=('CELL_ADDRESS', 'size'),
             First_Use_Date=('EVENT_START_TIME', 'min'),
             Last_Use_Date=('EVENT_START_TIME', 'max') ,
-            CELL_LAT = ("CELL_LAT"),
-            CELL_LONG = ('CELL_LONG')
+            CELL_LAT = ("CELL_LAT" , "first"),
+            CELL_LONG = ('CELL_LONG' , 'first')
         ).reset_index()
 
         coords = site_df.groupby('CELL_ADDRESS').apply(first_valid_coords).reset_index()
