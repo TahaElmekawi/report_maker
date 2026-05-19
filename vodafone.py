@@ -24,8 +24,11 @@ def process_vodafone(file):
         if col not in df.columns:
             df[col] = ""
 
-    # تنظيف البيانات
-    df = df.applymap(lambda x: x.strip() if isinstance(x, str) else x)
+    # ------------------------------
+    # ✅ تنظيف البيانات (تم الإصلاح هنا)
+    # ------------------------------
+    for col in df.select_dtypes(include="object").columns:
+        df[col] = df[col].astype(str).str.strip()
 
     # ------------------------------
     # Full Sheet
@@ -97,24 +100,20 @@ def process_vodafone(file):
     # ------------------------------
     # Facebook (Empty)
     # ------------------------------
-    fb_columns = [
+    fb_empty = pd.DataFrame(columns=[
         "Rank 🏆", "Phone Number 📱", "Other Numbers 📞",
         "Full Name 👨🏻‍💼", "Facebook ID 🆔", "Facebook Link 🌐",
         "Current Location 🌍", "Hometown 🏠",
         "Education 🏫", "Work 🏭"
-    ]
-
-    fb_empty = pd.DataFrame(columns=fb_columns)
+    ])
 
     # ------------------------------
     # Orders (Empty)
     # ------------------------------
-    orders_columns = [
+    orders_empty = pd.DataFrame(columns=[
         "Rank 🏆", "Linked Number 📞",
         "Orders & Data results 📑", "Source 💾"
-    ]
-
-    orders_empty = pd.DataFrame(columns=orders_columns)
+    ])
 
     # ------------------------------
     # Service Numbers
@@ -161,14 +160,6 @@ def process_vodafone(file):
         imei_analysis["🔢 IMEI"].astype(str) +
         ', "📲Get Info")'
     )
-
-    imei_analysis = imei_analysis[[
-        "📊 Count", "🔢 IMEI", "🏭 Handset Manufacturer",
-        "🏷️ Handset Marketing Name", "ℹ️ Device Info",
-        "📅 First Use Date", "📅 Last Use Date",
-        "⏰ First Use Time", "⏰ Last Use Time",
-        "📍 First Use Address", "📍 Last Use Address"
-    ]]
 
     imei_analysis = imei_analysis.sort_values("📊 Count", ascending=False)
 
