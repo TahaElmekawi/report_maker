@@ -4,51 +4,105 @@ from io import BytesIO
 
 from orange import process_orange
 from etisalat import process_etisalat
+from vodafone import process_vodafone
+
+# -----------------------
+# إعداد الصفحة
+# -----------------------
+st.set_page_config(
+    page_title="Telecom Analyzer",
+    page_icon="📊",
+    layout="wide"
+)
 
 st.title("📊 Telecom Report Generator")
 
+# -----------------------
+# اختيار الشركة
+# -----------------------
 company = st.selectbox(
-    "اختر الشركة",
-    ["Orange", "Etisalat"]
+    "🏢 اختر الشركة",
+    ["Orange", "Etisalat", "Vodafone"]
 )
 
+# -----------------------
+# رفع الملف
+# -----------------------
 file = st.file_uploader("📥 ارفع ملف Excel", type=["xlsx"])
 
+# حفظ الملف مرة واحدة
 if file:
+    st.session_state["file"] = file
+    st.success("✅ تم رفع الملف")
 
-    with st.spinner("⏳ جاري معالجة الملف..."):
+# -----------------------
+# زر التشغيل
+# -----------------------
+if "file" in st.session_state:
 
-        output = BytesIO()
+    if st.button("🚀 تشغيل التحليل"):
 
-        if company == "Orange":
+        with st.spinner("⏳ جاري معالجة البيانات..."):
 
-            calls, imei, site, cheet = process_orange(file)
+            file = st.session_state["file"]
+            output = BytesIO()
 
-            with pd.ExcelWriter(output, engine="openpyxl") as writer:
-                calls.to_excel(writer, sheet_name="calls", index=False)
-                imei.to_excel(writer, sheet_name="imei", index=False)
-                site.to_excel(writer, sheet_name="site", index=False)
-                cheet.to_excel(writer, sheet_name="cheet", index=False)
+            # -----------------------
+            # ORANGE
+            # -----------------------
+            if company == "Orange":
 
-            file_name = "orange_report.xlsx"
+                calls, imei, site, cheet = process_orange(file)
 
-        elif company == "Etisalat":
+                with pd.ExcelWriter(output, engine="openpyxl") as writer:
+                    calls.to_excel(writer, sheet_name="Calls", index=False)
+                    imei.to_excel(writer, sheet_name="IMEI", index=False)
+                    site.to_excel(writer, sheet_name="Sites", index=False)
+                    cheet.to_excel(writer, sheet_name="Full", index=False)
 
-            full, calls, imei, site = process_etisalat(file)
+                file_name = "orange_report.xlsx"
 
-            with pd.ExcelWriter(output, engine="openpyxl") as writer:
-                full.to_excel(writer, sheet_name="Full Sheet", index=False)
-                calls.to_excel(writer, sheet_name="calls_report", index=False)
-                imei.to_excel(writer, sheet_name="imei_report", index=False)
-                site.to_excel(writer, sheet_name="site_report", index=False)
+            # -----------------------
+            # ETISALAT
+            # -----------------------
+            elif company == "Etisalat":
 
-            file_name = "etisalat_report.xlsx"
+                full, calls, imei, site = process_etisalat(file)
 
-    st.success("✅ التقرير جاهز!")
+                with pd.ExcelWriter(output, engine="openpyxl") as writer:
+                    full.to_excel(writer, sheet_name="Full", index=False)
+                    calls.to_excel(writer, sheet_name="Calls", index=False)
+                    imei.to_excel(writer, sheet_name="IMEI", index=False)
+                    site.to_excel(writer, sheet_name="Sites", index=False)
 
-    st.download_button(
-        label="⬇️ تحميل التقرير",
-        data=output.getvalue(),
-        file_name=file_name,
-        mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-    )
+                file_name = "etisalat_report.xlsx"
+
+            # -----------------------
+            # VODAFONE
+            # -----------------------
+            elif company == "Vodafone":
+
+                data = process_vodafone(file)
+
+                with pd.ExcelWriter(output, engine="openpyxl") as writer:
+                    data["full"].to_excel(writer, sheet_name="Full Sheet", index=False)
+                    data["tower"].to_excel(writer, sheet_name="Tower", index=False)
+                    data["linked"].to_excel(writer, sheet_name="Linked", index=False)
+                    data["facebook"].to_excel(writer, sheet_name="Facebook", index=False)
+                    data["orders"].to_excel(writer, sheet_name="Orders", index=False)
+                    data["service"].to_excel(writer, sheet_name="Service", index=False)
+                    data["imei"].to_excel(writer, sheet_name="IMEI", index=False)
+
+                file_name = "vodafone_report.xlsx"
+
+        st.success("✅ التقرير جاهز!")
+
+        # -----------------------
+        # تحميل الملف
+        # -----------------------
+        st.download_button(
+            label="⬇️ تحميل التقرير",
+            data=output.getvalue(),
+            file_name=file_name,
+            mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        )
