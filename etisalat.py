@@ -2,7 +2,33 @@ def process_etisalat(file):
     import pandas as pd
     import numpy as np
 
-    df = pd.read_excel(file, sheet_name='cheet', dtype=str)
+    # قراءة أسماء الأوراق في ملف Excel
+    xls = pd.ExcelFile(file)
+    sheet_names = xls.sheet_names
+
+    # البحث عن ورقة تشبه 'cheet' (غير حساسة لحالة الأحرف)
+    target_sheet = None
+    for name in sheet_names:
+        if 'cheet' in name.lower():
+            target_sheet = name
+            break
+
+    # إذا لم يتم العثور على ورقة cheet، استخدم أول ورقة في الملف
+    if target_sheet is None:
+        target_sheet = sheet_names[0]
+        print(f"تحذير: لم يتم العثور على ورقة 'cheet'. تم استخدام '{target_sheet}' بدلاً من ذلك.")
+
+    # قراءة البيانات من الورقة المختارة
+    df = pd.read_excel(file, sheet_name=target_sheet, dtype=str)
+
+    # التأكد من وجود الأعمدة الأساسية (اختياري لتجنب أخطاء لاحقة)
+    required_cols = ['Call_Start_Date', 'Actual_Duration', 'B_Number', 'Network_Activity_Type_Name',
+                     'B_Number_Full_Name', 'B_Number_Address', 'B_Number_MU_Site_Address',
+                     'B_Number_MU_Latitude', 'B_Number_MU_Longitude', 'IMEI_Number', 'Site_Address',
+                     'Latitude', 'Longitude']
+    for col in required_cols:
+        if col not in df.columns:
+            df[col] = np.nan  # إضافة العمود بقيم فارغة إذا كان مفقودًا
 
     # تحويل البيانات
     df['Call_Start_Date'] = pd.to_datetime(df['Call_Start_Date'], errors='coerce')
