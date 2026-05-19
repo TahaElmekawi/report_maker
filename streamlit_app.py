@@ -73,19 +73,24 @@ if "file" in st.session_state:
 
                 name = "vodafone.xlsx"
 
+
             # WE
+
+
             elif company == "WE":
-                data = process_we(file)
 
-                with pd.ExcelWriter(output, engine="openpyxl") as writer:
-                    data["full"].to_excel(writer, "Full", index=False)
-                    data["tower"].to_excel(writer, "Tower", index=False)
-                    data["linked"].to_excel(writer, "Linked", index=False)
-                    data["facebook"].to_excel(writer, "Facebook", index=False)
-                    data["orders"].to_excel(writer, "Orders", index=False)
+    data = process_we(file)
 
-                name = "we.xlsx"
+    with pd.ExcelWriter(output, engine="openpyxl") as writer:
+        data["full"].to_excel(writer, sheet_name="Full Sheet 📝", index=False)
+        data["tower"].to_excel(writer, sheet_name="Tower Location 🌍", index=False)
+        data["linked"].to_excel(writer, sheet_name="Linked Numbers 📞", index=False)
+        data["facebook"].to_excel(writer, sheet_name="Facebook Profile 💻", index=False)
+        data["orders"].to_excel(writer, sheet_name="Orders & Data 🧾", index=False)
 
+    name = "we_report.xlsx"
+
+    
         st.success("✅ التقرير جاهز!")
 
         st.download_button(
