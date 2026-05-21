@@ -8,11 +8,11 @@ from vodafone import process_vodafone
 from we import process_we
 
 # -----------------------
-# إعداد الصفحة
+# إعداد الصفحة + الأيقونة
 # -----------------------
 st.set_page_config(
     page_title="Telecom Analyzer",
-    page_icon="📊",
+    page_icon="favicon.png",  # 👈 الأيقونة بتاعتك
     layout="wide"
 )
 
@@ -47,100 +47,102 @@ if "file" in st.session_state:
 
         with st.spinner("⏳ جاري المعالجة..."):
 
-            # -----------------------
-            # ORANGE
-            # -----------------------
-            if company == "Orange":
+            try:
 
-                calls, imei, site, cheet = process_orange(file)
+                # -----------------------
+                # ORANGE
+                # -----------------------
+                if company == "Orange":
 
-                with pd.ExcelWriter(output, engine="openpyxl") as writer:
-                    calls.to_excel(writer, sheet_name="calls", index=False)
-                    imei.to_excel(writer, sheet_name="imei", index=False)
-                    site.to_excel(writer, sheet_name="site", index=False)
-                    cheet.to_excel(writer, sheet_name="cheet", index=False)
+                    calls, imei, site, cheet = process_orange(file)
 
-                name = "orange_report.xlsx"
+                    with pd.ExcelWriter(output, engine="openpyxl") as writer:
+                        calls.to_excel(writer, "calls", index=False)
+                        imei.to_excel(writer, "imei", index=False)
+                        site.to_excel(writer, "site", index=False)
+                        cheet.to_excel(writer, "cheet", index=False)
 
-            # -----------------------
-            # ETISALAT
-            # -----------------------
-            elif company == "Etisalat":
+                    name = "orange_report.xlsx"
 
-                full, calls, imei, site = process_etisalat(file)
+                # -----------------------
+                # ETISALAT
+                # -----------------------
+                elif company == "Etisalat":
 
-                with pd.ExcelWriter(output, engine="openpyxl") as writer:
-                    full.to_excel(writer, sheet_name="Full Sheet", index=False)
-                    calls.to_excel(writer, sheet_name="calls_report", index=False)
-                    imei.to_excel(writer, sheet_name="imei_report", index=False)
-                    site.to_excel(writer, sheet_name="site_report", index=False)
+                    full, calls, imei, site = process_etisalat(file)
 
-                name = "etisalat_report.xlsx"
+                    with pd.ExcelWriter(output, engine="openpyxl") as writer:
+                        full.to_excel(writer, "Full Sheet", index=False)
+                        calls.to_excel(writer, "calls_report", index=False)
+                        imei.to_excel(writer, "imei_report", index=False)
+                        site.to_excel(writer, "site_report", index=False)
 
-            # -----------------------
-            # VODAFONE
-            # -----------------------
-            elif company == "Vodafone":
+                    name = "etisalat_report.xlsx"
 
-                data = process_vodafone(file)
+                # -----------------------
+                # VODAFONE
+                # -----------------------
+                elif company == "Vodafone":
 
-                with pd.ExcelWriter(output, engine="openpyxl") as writer:
-                    data["full"].to_excel(writer, sheet_name="Full Sheet 📝", index=False)
-                    data["tower"].to_excel(writer, sheet_name="Tower Location 🌍", index=False)
-                    data["linked"].to_excel(writer, sheet_name="Linked Numbers 📞", index=False)
-                    data["facebook"].to_excel(writer, sheet_name="Facebook Profile 💻", index=False)
-                    data["orders"].to_excel(writer, sheet_name="Orders & Data 🧾", index=False)
-                    data["service"].to_excel(writer, sheet_name="Service Numbers 📩", index=False)
-                    data["imei"].to_excel(writer, sheet_name="IMEI Analysis 📱", index=False)
+                    data = process_vodafone(file)
 
-                name = "vodafone_report.xlsx"
+                    with pd.ExcelWriter(output, engine="openpyxl") as writer:
+                        data["full"].to_excel(writer, "Full Sheet 📝", index=False)
+                        data["tower"].to_excel(writer, "Tower Location 🌍", index=False)
+                        data["linked"].to_excel(writer, "Linked Numbers 📞", index=False)
+                        data["facebook"].to_excel(writer, "Facebook Profile 💻", index=False)
+                        data["orders"].to_excel(writer, "Orders & Data 🧾", index=False)
+                        data["service"].to_excel(writer, "Service Numbers 📩", index=False)
+                        data["imei"].to_excel(writer, "IMEI Analysis 📱", index=False)
 
-            # -----------------------
-            # WE
-            # -----------------------
-            elif company == "WE":
+                    name = "vodafone_report.xlsx"
 
-                data = process_we(file)
+                # -----------------------
+                # WE
+                # -----------------------
+                elif company == "WE":
 
-                with pd.ExcelWriter(output, engine="openpyxl") as writer:
+                    data = process_we(file)
 
-                    written = False
+                    with pd.ExcelWriter(output, engine="openpyxl") as writer:
 
-                    if not data["full"].empty:
-                        data["full"].to_excel(writer, sheet_name="Full Sheet 📝", index=False)
-                        written = True
+                        written = False
 
-                    if not data["tower"].empty:
-                        data["tower"].to_excel(writer, sheet_name="Tower Location 🌍", index=False)
-                        written = True
+                        if not data["full"].empty:
+                            data["full"].to_excel(writer, "Full Sheet 📝", index=False)
+                            written = True
 
-                    if not data["linked"].empty:
-                        data["linked"].to_excel(writer, sheet_name="Linked Numbers 📞", index=False)
-                        written = True
+                        if not data["tower"].empty:
+                            data["tower"].to_excel(writer, "Tower Location 🌍", index=False)
+                            written = True
 
-                    if not data["facebook"].empty:
-                        data["facebook"].to_excel(writer, sheet_name="Facebook Profile 💻", index=False)
-                        written = True
+                        if not data["linked"].empty:
+                            data["linked"].to_excel(writer, "Linked Numbers 📞", index=False)
+                            written = True
 
-                    if not data["orders"].empty:
-                        data["orders"].to_excel(writer, sheet_name="Orders & Data 🧾", index=False)
-                        written = True
+                        if not data["facebook"].empty:
+                            data["facebook"].to_excel(writer, "Facebook Profile 💻", index=False)
+                            written = True
 
-                    # حماية من الخطأ (لو كله فاضي)
-                    if not written:
-                        pd.DataFrame({"Message": ["No Data Found"]}).to_excel(
-                            writer, sheet_name="Empty", index=False
-                        )
+                        if not data["orders"].empty:
+                            data["orders"].to_excel(writer, "Orders & Data 🧾", index=False)
+                            written = True
 
-                name = "we_report.xlsx"
+                        if not written:
+                            pd.DataFrame({"Message": ["No Data Found"]}).to_excel(
+                                writer, "Empty", index=False
+                            )
+
+                    name = "we_report.xlsx"
+
+            except Exception as e:
+                st.error(f"❌ حصل خطأ: {str(e)}")
+                st.stop()
 
         st.success("✅ التقرير جاهز!")
 
-        # -----------------------
-        # تحميل الملف
-        # -----------------------
         st.download_button(
-            label="⬇️ تحميل التقرير",
+            "⬇️ تحميل التقرير",
             data=output.getvalue(),
             file_name=name,
             mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
