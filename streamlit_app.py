@@ -12,7 +12,7 @@ from we import process_we
 # -----------------------
 st.set_page_config(
     page_title="Telecom Analyzer",
-    page_icon="favicon.png",  # 👈 الأيقونة بتاعتك
+    page_icon="favicon.png",
     layout="wide"
 )
 
@@ -43,6 +43,8 @@ if "file" in st.session_state:
     if st.button("🚀 تشغيل التحليل"):
 
         file = st.session_state["file"]
+        file.seek(0)  # 🔥 مهم جدًا
+
         output = BytesIO()
 
         with st.spinner("⏳ جاري المعالجة..."):
@@ -108,26 +110,27 @@ if "file" in st.session_state:
 
                         written = False
 
-                        if not data["full"].empty:
+                        if "full" in data and not data["full"].empty:
                             data["full"].to_excel(writer, "Full Sheet 📝", index=False)
                             written = True
 
-                        if not data["tower"].empty:
+                        if "tower" in data and not data["tower"].empty:
                             data["tower"].to_excel(writer, "Tower Location 🌍", index=False)
                             written = True
 
-                        if not data["linked"].empty:
+                        if "linked" in data and not data["linked"].empty:
                             data["linked"].to_excel(writer, "Linked Numbers 📞", index=False)
                             written = True
 
-                        if not data["facebook"].empty:
+                        if "facebook" in data and not data["facebook"].empty:
                             data["facebook"].to_excel(writer, "Facebook Profile 💻", index=False)
                             written = True
 
-                        if not data["orders"].empty:
+                        if "orders" in data and not data["orders"].empty:
                             data["orders"].to_excel(writer, "Orders & Data 🧾", index=False)
                             written = True
 
+                        # 🔥 حل مشكلة openpyxl
                         if not written:
                             pd.DataFrame({"Message": ["No Data Found"]}).to_excel(
                                 writer, "Empty", index=False
@@ -140,6 +143,9 @@ if "file" in st.session_state:
                 st.stop()
 
         st.success("✅ التقرير جاهز!")
+
+        # 🔥 مهم جدًا
+        output.seek(0)
 
         st.download_button(
             "⬇️ تحميل التقرير",
